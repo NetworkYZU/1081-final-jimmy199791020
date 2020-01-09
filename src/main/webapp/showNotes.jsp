@@ -1,3 +1,7 @@
+<%@page import="java.sql.DriverManager"%>
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.beans.Statement"%>
+<%@page import="java.sql.Connection"%>
 <%@page import="lendle.courses.wp.finalexam.Note"%>
 <%@page import="lendle.courses.wp.finalexam.UserData"%>
 <%@ page contentType="text/html" pageEncoding="utf-8"%>
@@ -19,7 +23,6 @@
     </head>
     <body>
         <a href="logout.jsp">登出</a><br/>
-      
       <!--
       將目前 session 中記錄的 user 的 notes 顯示在下列表格中
       (20%)
@@ -33,7 +36,24 @@
               </tr>
           </thead>
           <tbody>
-              
+              <%
+                Class.forName("org.apache.derby.jdbc.ClientDriver");
+                Connection conn = DriverManager.getConnection("jdbc:derby://localhost/sample","app","app");
+                Statement stmt = conn.createStatement();
+                String id = request.getParameter("id");
+                String password = request.getParameter("password");
+                ResultSet rs = stmt.executeQuery("select * from Login ");
+                while(rs.next()){
+                    out.println("<tr>");
+                    out.println("<td>"+rs.getString("ID")+"</td>");
+                    out.println("<td>"+rs.getString("PASSWORD")+"</td>");
+                    out.println("<td>");
+                    out.println("<a href='delete?id="+rs.getString("ID")+"'>DELETE</a>");
+                    out.println("</td>");
+                    out.println("</tr>");
+                }
+                conn.close();
+                %>
           </tbody>
       </table>
     </body>
